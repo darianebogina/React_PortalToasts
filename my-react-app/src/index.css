@@ -6,19 +6,12 @@
   color-scheme: light dark;
   color: rgba(0, 0, 0, 0.87);
   background-color: #e7e7e7;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -39,12 +32,24 @@ button {
 }
 
 .modal {
-  overflow: hidden;
   position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.modal ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal ul li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 60px;
+  list-style: none;
   background: rgba(253, 163, 216, 0.32);
-  width: 150px;
-  height: 70px;
-  /*top: 0;*/
-  /*right: 0;*/
-  /*transition: opacity 3s ease-in-out;*/
+  border-radius: 30px;
 }
