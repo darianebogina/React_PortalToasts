@@ -1,10 +1,11 @@
-import {useState} from 'react'
+import {useEffect, useState, useCallback, memo} from 'react'
 import {createPortal} from 'react-dom';
 import './App.css'
 
 type Toast = {
     text: string;
     id: number;
+    exp: number;
 }
 
 export function App() {
@@ -31,31 +32,45 @@ const Counter = () => {
 const ToastPanel = () => {
     const [items, setItems] = useState<Array<Toast>>([]);
 
-    const addNewToast = () => {
+    const addNewToast = useCallback(() => {
         const item = {
             text: "I'm a new toast!",
             id: Math.floor(Math.random() * 10000),
+            exp: Date.now() + 4000,
         }
         setItems((prev) => [item, ...prev]);
-        deleteNewToast(item.id);
-    }
+    }, []);
 
-    const deleteNewToast = (id: number) => {
-        setTimeout(() => {
-            setItems(prev => prev.filter((item: Toast) => item.id !== id));
-        }, 2000);
-    }
+    useEffect(() => {
+        if (items.length > 0) {
+            const a = setInterval(() =>
+                    setItems(prev =>
+                        prev.filter((item: Toast) => item.exp > Date.now()))
+                , 500);
+            return () => {
+                clearInterval(a);
+            }
+        }
+    }, [items]);
 
     return (
         <>
-            <h3>Toasts here</h3>
             {createPortal(<List items={items}/>, document.body)}
-            <button onClick={addNewToast}>Toast</button>
+            <ComponentButton addNewToast={addNewToast}/>
         </>
     )
 };
 
-const List = ({items}: {items: Array<Toast>}) => {
+const ComponentButton = memo(({addNewToast}: { addNewToast: () => void }) => {
+    return (
+        <>
+            <h3>Toasts here</h3>
+            <button onClick={addNewToast}>Toast</button>
+        </>
+    )
+});
+
+const List = ({items}: { items: Array<Toast> }) => {
     return (
         <div className="modal">
             <ul>
@@ -65,13 +80,13 @@ const List = ({items}: {items: Array<Toast>}) => {
             </ul>
         </div>
     )
-}
+};
 
 const ListItem = ({text}: { text: string }) => {
     return (
         <li>
             {text}
         </li>
-    );
-}
+    )
+};
 
